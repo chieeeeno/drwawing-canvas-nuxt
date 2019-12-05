@@ -1,35 +1,35 @@
 on:
-    push:
-        branches:
-            - feature/test
+  push:
+    branches:
+      - feature/test
 name: Build and Deploy
 jobs:
-    FTP-Deploy-Action:
-        name: FTP-Deploy-Action
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
 
-            - name: Use Node.js 12.13
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '12.13'
+      - name: Use Node.js 12.13
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.13'
 
-            - name: Build Project
-              run: |
-                  npm install
-                  npm run build --if-present
+      - name: Build Project
+        run: |
+          npm install
+          npm run generate --if-present
 
-            - name: List output files
-              run: ls
+      - name: List output files
+        run: ls
 
-            - name: FTP-Deploy-Action
-              uses: SamKirkland/FTP-Deploy-Action@2.0.0
-              env:
-                  FTP_SERVER: ${{ secrets.FTP_SERVER }}
-                  FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-                  FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-                  LOCAL_DIR: htdocs
-                  REMOTE_DIR: public_html/_test
-                  ARGS: --delete
-                  # --delete arg will delete files on the server if you've deleted them in git
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          LOCAL_DIR: dist
+          REMOTE_DIR: home/frontnote/www/demo
+          ARGS: --delete
+          # --delete arg will delete files on the server if you've deleted them in git
